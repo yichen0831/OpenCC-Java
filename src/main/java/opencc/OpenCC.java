@@ -26,7 +26,7 @@ public class OpenCC {
     }
     
     public static void main(String[] args) {
-        OpenCC openCC = new OpenCC("hk2s");
+        OpenCC openCC = new OpenCC("tw2sp");
         
     }
 }

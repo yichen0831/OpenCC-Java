@@ -1,25 +1,30 @@
 package opencc.utils;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Dictionary holds the mappings for converting Chinese characters
  */
 public class Dictionary {
 
-    String config;
-    List<Map<String, String>> dictSet;
-    Map<String, String> dict;
+    protected String name;
+    protected String config;
+    protected List<Map<String, String>> dictChain;
+    protected Map<String, String> dict;
 
     /**
      *
@@ -28,8 +33,9 @@ public class Dictionary {
      */
     public Dictionary(String config) {
 
-        dictSet = new ArrayList<>();
+        dictChain = new ArrayList<>();
 
+        name = "";
         this.config = "";
 
         setConfig(config);
@@ -43,7 +49,7 @@ public class Dictionary {
             return;
         }
 
-        dictSet.clear();
+        dictChain.clear();
 
         switch (config) {
             case "hk2s":
@@ -67,24 +73,78 @@ public class Dictionary {
     }
 
     /**
-     * load dictionary files into dictSet
+     * load dictionary files into dictChain
      */
     private void loadDict() {
-        dictSet.clear();
+        dictChain.clear();
 
         JSONParser jsonParser = new JSONParser();
 
+        List<String> dictFileNames = new ArrayList<>();
+
         try {
             URL url = getClass().getClassLoader().getResource("config/" + config + ".json");
-            System.out.println(url.getFile());
-            Object obj = jsonParser.parse(new FileReader(url.getFile()));
-            JSONObject jsonObject = (JSONObject) obj;
+            Object object = jsonParser.parse(new FileReader(url.getFile()));
 
-            JSONArray jsonArray = (JSONArray) jsonObject.get("conversion_chain");
-            System.out.println(jsonArray.get(0));
+            JSONObject dictRoot = (JSONObject) object;
+
+            name = (String) dictRoot.get("name");
+            JSONArray jsonArray = (JSONArray) dictRoot.get("conversion_chain");
+
+            for (Object obj : jsonArray) {
+                JSONObject dictObj = (JSONObject) ((JSONObject) obj).get("dict");
+                dictFileNames.addAll(getDictFileNames(dictObj));
+            }
 
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+
+        for (String filename : dictFileNames) {
+            dict = new HashMap<>();
+
+            URL url = getClass().getClassLoader().getResource("dictionary/" + filename);
+            try {
+                List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
+
+                for (String line : lines) {
+                    String[] words = line.split("\t");
+                    dict.put(words[0], words[1]);
+                }
+
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            dictChain.add(dict);
+        }
+
+    }
+
+    private List<String> getDictFileNames(JSONObject dictObject) {
+        List<String> filenames = new ArrayList<>();
+
+        String type = (String) dictObject.get("type");
+
+        if (type.equals("txt")) {
+            filenames.add((String) dictObject.get("file"));
+        }
+        else if (type.equals("group")) {
+            JSONArray dictGroup = (JSONArray) dictObject.get("dicts");
+            for (Object obj : dictGroup) {
+                filenames.addAll(getDictFileNames((JSONObject) obj));
+            }
+        }
+
+        return filenames;
+    }
+
+
+    /**
+     *
+     * @return dictChain
+     */
+    public List<Map<String, String>> getDictChain() {
+        return dictChain;
     }
 }
