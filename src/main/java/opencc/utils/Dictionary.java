@@ -5,12 +5,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -83,8 +80,27 @@ public class Dictionary {
         List<String> dictFileNames = new ArrayList<>();
 
         try {
-            URL url = getClass().getClassLoader().getResource("config/" + config + ".json");
-            Object object = jsonParser.parse(new FileReader(url.getFile()));
+            String filename = "/config/" + config + ".json";
+            URL url = getClass().getResource(filename);
+            File file;
+            if (url.toString().startsWith("jar:")) {
+                InputStream inputStream = getClass().getResourceAsStream(filename);
+                file = File.createTempFile("tmpfile", ".tmp");
+                OutputStream outputStream = new FileOutputStream(file);
+
+                int read;
+                byte[] bytes = new byte[1024];
+                while ((read = inputStream.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+
+                file.deleteOnExit();
+            }
+            else {
+                file = new File(url.getFile());
+            }
+
+            Object object = jsonParser.parse(new FileReader(file));
 
             JSONObject dictRoot = (JSONObject) object;
 
@@ -102,17 +118,35 @@ public class Dictionary {
 
         for (String filename : dictFileNames) {
             dict = new HashMap<>();
-
-            URL url = getClass().getClassLoader().getResource("dictionary/" + filename);
+            filename = "/dictionary/"  + filename;
+            URL url = getClass().getResource(filename);
             try {
-                List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
+                File file;
+                if (url.toString().startsWith("jar:")) {
+                    InputStream inputStream = getClass().getResourceAsStream(filename);
+                    file = File.createTempFile("tmpdictfile", ".tmp");
+                    OutputStream outputStream = new FileOutputStream(file);
+
+                    int read;
+                    byte[] bytes = new byte[1024];
+                    while ((read = inputStream.read(bytes)) != -1) {
+                        outputStream.write(bytes, 0, read);
+                    }
+
+                    file.deleteOnExit();
+                }
+                else {
+                    file = new File(url.getFile());
+                }
+
+                List<String> lines = Files.readAllLines(file.toPath());
 
                 for (String line : lines) {
                     String[] words = line.trim().split("\t");
                     dict.put(words[0], words[1]);
                 }
 
-            } catch (IOException | URISyntaxException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 

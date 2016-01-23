@@ -10,3 +10,10 @@ repositories {
 dependencies {
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
 }
+
+task fatJar(type: Jar) {
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it)}
+    }
+    with jar
+}
