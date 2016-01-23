@@ -28,8 +28,8 @@ public class Dictionary {
 
     /**
      *
-     * @param config the config to use, including 'hk2s', 's2hk', 's2t', 's2tw', 's2twp',
-     *               't2hk', 't2s', 't2tw', 'tw2s', and 'tw2sp'
+     * @param config the config to use, including "hk2s", "s2hk", "s2t", "s2tw", "s2twp",
+     *               "t2hk", "t2s", "t2tw", "tw2s", and "tw2sp"
      */
     public Dictionary(String config) {
 
@@ -108,7 +108,7 @@ public class Dictionary {
                 List<String> lines = Files.readAllLines(Paths.get(url.toURI()));
 
                 for (String line : lines) {
-                    String[] words = line.split("\t");
+                    String[] words = line.trim().split("\t");
                     dict.put(words[0], words[1]);
                 }
 
