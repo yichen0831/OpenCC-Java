@@ -54,6 +54,7 @@ public class OpenCC {
                 int pos = stringBuilder.indexOf(key, fromIndex);
                 while (pos >= 0) {
                     String converted = dictMap.get(key);
+                    converted = converted.split(" ")[0];  // get the 1st result if multiple choices available
                     stringBuilder.replace(pos, pos + key.length(), converted);
                     fromIndex = pos + converted.length();
                     pos = stringBuilder.indexOf(key, fromIndex);
