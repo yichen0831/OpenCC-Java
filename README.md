@@ -6,6 +6,11 @@ OpenCC-Java is made by Java with the dictionary files of [OpenCC](https://github
 OpenCC-Java是用Java所寫, 使用由BYVoid(<byvoid.kcp@gmail.com>)所開發的[OpenCC](https://github.com/BYVoid/OpenCC)中的字典檔案.
 
 
+## Dependencies 依賴套件
+[json-simple](https://code.google.com/p/json-simple/) is used for parsing json files
+
+使用[json-simple](https://code.google.com/p/json-simple/)解析json檔案
+
 ## Installation 安裝
 Download the jar file from the [release](https://github.com/yichen0831/OpenCC-Java/releases) page and add it to the project build path.
 
