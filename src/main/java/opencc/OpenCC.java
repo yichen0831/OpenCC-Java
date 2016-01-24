@@ -19,12 +19,12 @@ public class OpenCC {
     }
 
     /**
-     * construct OpenCC with config
-     * @param config options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
+     * construct OpenCC with conversion
+     * @param conversion options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
      *               "t2tw", "tw2s", and "tw2sp"
      */
-    public OpenCC(String config) {
-        dictionary = new Dictionary(config);
+    public OpenCC(String conversion) {
+        dictionary = new Dictionary(conversion);
     }
 
     /**
@@ -36,12 +36,12 @@ public class OpenCC {
     }
 
     /**
-     * set OpenCC a new config
-     * @param config options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
+     * set OpenCC a new conversion
+     * @param conversion options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
      *               "t2tw", "tw2s", and "tw2sp"
      */
-    public void setConfig(String config) {
-        dictionary.setConfig(config);
+    public void setConversion(String conversion) {
+        dictionary.setConfig(conversion);
     }
 
     /**
