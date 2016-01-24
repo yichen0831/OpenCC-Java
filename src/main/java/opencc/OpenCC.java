@@ -28,6 +28,14 @@ public class OpenCC {
     }
 
     /**
+     *
+     * @return dict name
+     */
+    public String getDictName() {
+        return dictionary.getDictName();
+    }
+
+    /**
      * set OpenCC a new config
      * @param config options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
      *               "t2tw", "tw2s", and "tw2sp"
@@ -48,6 +56,7 @@ public class OpenCC {
 
         StringBuilder stringBuilder = new StringBuilder(string);
 
+        System.out.println(dictionary.getDictChain().size());
         for (Map<String, String> dictMap : dictionary.getDictChain()) {
             for (String key : dictMap.keySet()) {
                 int fromIndex = 0;

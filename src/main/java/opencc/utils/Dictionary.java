@@ -38,7 +38,20 @@ public class Dictionary {
         setConfig(config);
     }
 
+    /**
+     *
+     * @return dict name
+     */
+    public String getDictName() {
+        return name;
+    }
 
+
+    /**
+     * set config
+     * @param config the config to use, including "hk2s", "s2hk", "s2t", "s2tw", "s2twp",
+     *               "t2hk", "t2s", "t2tw", "tw2s", and "tw2sp"
+     */
     public void setConfig(String config) {
         config = config.toLowerCase();
 
