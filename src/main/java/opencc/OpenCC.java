@@ -56,13 +56,12 @@ public class OpenCC {
 
         StringBuilder stringBuilder = new StringBuilder(string);
 
-        System.out.println(dictionary.getDictChain().size());
         for (Map<String, String> dictMap : dictionary.getDictChain()) {
             for (String key : dictMap.keySet()) {
                 int fromIndex = 0;
                 int pos = stringBuilder.indexOf(key, fromIndex);
+                String converted = dictMap.get(key);
                 while (pos >= 0) {
-                    String converted = dictMap.get(key);
                     converted = converted.split(" ")[0];  // get the 1st result if multiple choices available
                     stringBuilder.replace(pos, pos + key.length(), converted);
                     fromIndex = pos + converted.length();
