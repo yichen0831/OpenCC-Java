@@ -57,15 +57,15 @@ public class OpenCC {
         StringBuilder stringBuilder = new StringBuilder(string);
 
         for (Map<String, String> dictMap : dictionary.getDictChain()) {
-            for (String key : dictMap.keySet()) {
+            for (Map.Entry<String, String> entry : dictMap.entrySet()) {
                 int fromIndex = 0;
-                int pos = stringBuilder.indexOf(key, fromIndex);
-                String converted = dictMap.get(key);
+                int pos = stringBuilder.indexOf(entry.getKey(), fromIndex);
+                String converted = entry.getValue();
                 while (pos >= 0) {
                     converted = converted.split(" ")[0];  // get the 1st result if multiple choices available
-                    stringBuilder.replace(pos, pos + key.length(), converted);
+                    stringBuilder.replace(pos, pos + entry.getKey().length(), converted);
                     fromIndex = pos + converted.length();
-                    pos = stringBuilder.indexOf(key, fromIndex);
+                    pos = stringBuilder.indexOf(entry.getKey(), fromIndex);
                 }
             }
         }
