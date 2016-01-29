@@ -8,10 +8,7 @@ import org.json.simple.parser.ParseException;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Dictionary holds the mappings for converting Chinese characters
@@ -20,8 +17,7 @@ public class Dictionary {
 
     protected String name;
     protected String config;
-    protected List<Map<String, String>> dictChain;
-    protected Map<String, String> dict;
+    protected List<SortedMap<String, String>> dictChain;
 
     /**
      *
@@ -130,7 +126,8 @@ public class Dictionary {
         }
 
         for (String filename : dictFileNames) {
-            dict = new HashMap<>();
+            TreeMap<String, String> dict = new TreeMap<>();
+
             filename = "/dictionary/"  + filename;
             URL url = getClass().getResource(filename);
             try {
@@ -163,7 +160,7 @@ public class Dictionary {
                 e.printStackTrace();
             }
 
-            dictChain.add(dict);
+            dictChain.add(Collections.unmodifiableSortedMap(dict));
         }
 
     }
@@ -191,7 +188,7 @@ public class Dictionary {
      *
      * @return dictChain
      */
-    public List<Map<String, String>> getDictChain() {
+    public List<SortedMap<String, String>> getDictChain() {
         return dictChain;
     }
 }

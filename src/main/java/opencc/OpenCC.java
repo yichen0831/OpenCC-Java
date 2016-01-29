@@ -3,6 +3,7 @@ package opencc;
 import opencc.utils.Dictionary;
 
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * OpenCC converts Simplified Chinese to Traditional Chinese and vice versa
@@ -56,7 +57,7 @@ public class OpenCC {
 
         StringBuilder stringBuilder = new StringBuilder(string);
 
-        for (Map<String, String> dictMap : dictionary.getDictChain()) {
+        for (SortedMap<String, String> dictMap : dictionary.getDictChain()) {
             for (Map.Entry<String, String> entry : dictMap.entrySet()) {
                 int fromIndex = 0;
                 int pos = stringBuilder.indexOf(entry.getKey(), fromIndex);
