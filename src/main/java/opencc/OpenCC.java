@@ -2,6 +2,7 @@ package opencc;
 
 import opencc.utils.Dictionary;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -9,6 +10,24 @@ import java.util.SortedMap;
  * OpenCC converts Simplified Chinese to Traditional Chinese and vice versa
  */
 public class OpenCC {
+//    public static final String[] CONVERSIONS = new String[] {
+//            "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
+//            "t2tw", "tw2s", "tw2sp"
+//    };
+
+    public static final Map<String, String> CONVERSIONS = new HashMap<>();
+    static {
+        CONVERSIONS.put("s2t", "簡->繁");
+        CONVERSIONS.put("s2hk", "簡->繁(香港用字)");
+        CONVERSIONS.put("s2tw", "簡->繁(台灣用字)");
+        CONVERSIONS.put("s2twp", "簡->繁(台灣用語)");
+        CONVERSIONS.put("t2hk", "繁->繁(香港用字)");
+        CONVERSIONS.put("t2tw", "繁->繁(台灣用字)");
+        CONVERSIONS.put("t2s", "繁->簡");
+        CONVERSIONS.put("hk2s", "繁(香港用字)->簡");
+        CONVERSIONS.put("tw2s", "繁(台灣用字)->簡");
+        CONVERSIONS.put("tw2sp", "繁(台灣用語)->簡(大陸用語)");
+    }
 
     Dictionary dictionary;
 
