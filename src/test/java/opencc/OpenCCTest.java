@@ -1,14 +1,16 @@
 package opencc;
 
+import static org.junit.Assert.*;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
+/**
+ * OpenCCTest
+ */
 public class OpenCCTest {
-
-    OpenCC openCC;
+	private OpenCC openCC;
 
     @Before
     public void setUp() {
@@ -19,7 +21,13 @@ public class OpenCCTest {
     public void tearDown() {
         openCC = null;
     }
-
+	
+    @Test
+    public void testConvertNothing() {
+        OpenCC openCC = new OpenCC();
+        assertTrue(openCC.convert("This is a book. That is an apple.").contentEquals("This is a book. That is an apple."));
+    }
+    
     @Test
     public void testHK2S() {
         openCC.setConversion("hk2s");
@@ -99,5 +107,4 @@ public class OpenCCTest {
         String expected = "香烟（英语：Cigarette），为烟草制品的一种。内存是一种很常见及常用的电脑输入设备。";
         assertEquals(expected, openCC.convert(toConvert));
     }
-
 }

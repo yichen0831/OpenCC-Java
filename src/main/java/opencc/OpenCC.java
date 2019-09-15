@@ -1,96 +1,44 @@
 package opencc;
 
-import opencc.utils.Dictionary;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * OpenCC converts Simplified Chinese to Traditional Chinese and vice versa
+ * OpenCC
  */
 public class OpenCC {
-//    public static final String[] CONVERSIONS = new String[] {
-//            "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
-//            "t2tw", "tw2s", "tw2sp"
-//    };
 
-    public static final Map<String, String> CONVERSIONS = new HashMap<>();
-    static {
-        CONVERSIONS.put("s2t", "簡->繁");
-        CONVERSIONS.put("s2hk", "簡->繁(香港用字)");
-        CONVERSIONS.put("s2tw", "簡->繁(台灣用字)");
-        CONVERSIONS.put("s2twp", "簡->繁(台灣用語)");
-        CONVERSIONS.put("t2hk", "繁->繁(香港用字)");
-        CONVERSIONS.put("t2tw", "繁->繁(台灣用字)");
-        CONVERSIONS.put("t2s", "繁->簡");
-        CONVERSIONS.put("hk2s", "繁(香港用字)->簡");
-        CONVERSIONS.put("tw2s", "繁(台灣用字)->簡");
-        CONVERSIONS.put("tw2sp", "繁(台灣用語)->簡(大陸用語)");
-    }
+	private List<Converter> converterList = new ArrayList<>();
+	private boolean isConversionSet;
 
-    Dictionary dictionary;
+	public void setConversion(String conversion) {
+		loadConfig(conversion);
+		isConversionSet = true;
+	}
 
-    /**
-     * construct OpenCC with default config of "s2t"
-     */
-    public OpenCC() {
-        this("s2t");
-    }
+	private void loadConfig(String conversion) {
+		ConfigLoader configLoader = new ConfigLoader();
+		Config config = configLoader.load(conversion);
 
-    /**
-     * construct OpenCC with conversion
-     * @param conversion options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
-     *               "t2tw", "tw2s", and "tw2sp"
-     */
-    public OpenCC(String conversion) {
-        dictionary = new Dictionary(conversion);
-    }
+		System.out.println(config.getName());
 
-    /**
-     *
-     * @return dict name
-     */
-    public String getDictName() {
-        return dictionary.getDictName();
-    }
+		List<List<String>> conversionList = config.getConversionChain();
+		converterList.clear();
+		for (List<String> dictNameList : conversionList) {
+			Converter converter = new Converter(dictNameList);
+			converterList.add(converter);
+		}
+	}
 
-    /**
-     * set OpenCC a new conversion
-     * @param conversion options are "hk2s", "s2hk", "s2t", "s2tw", "s2twp", "t2hk", "t2s",
-     *               "t2tw", "tw2s", and "tw2sp"
-     */
-    public void setConversion(String conversion) {
-        dictionary.setConfig(conversion);
-    }
-
-    /**
-     * convert the string
-     * @param string input string to convert
-     * @return converted string
-     */
-    public String convert(String string) {
-        if (string.length() == 0) {
-            return "";
-        }
-
-        StringBuilder stringBuilder = new StringBuilder(string);
-
-        for (SortedMap<String, String> dictMap : dictionary.getDictChain()) {
-            for (Map.Entry<String, String> entry : dictMap.entrySet()) {
-                int fromIndex = 0;
-                int pos = stringBuilder.indexOf(entry.getKey(), fromIndex);
-                String converted = entry.getValue();
-                while (pos >= 0) {
-                    converted = converted.split(" ")[0];  // get the 1st result if multiple choices available
-                    stringBuilder.replace(pos, pos + entry.getKey().length(), converted);
-                    fromIndex = pos + converted.length();
-                    pos = stringBuilder.indexOf(entry.getKey(), fromIndex);
-                }
-            }
-        }
-
-        return stringBuilder.toString();
-    }
-
+	public String convert(String input) {
+		if (!isConversionSet) {
+			setConversion("s2t");
+		}
+		
+		StringBuilder stringBuilder = new StringBuilder(input);
+		for(Converter converter : converterList) {
+			stringBuilder = converter.convert(stringBuilder);
+		}
+		return stringBuilder.toString();
+	}
 }
