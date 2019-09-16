@@ -16,6 +16,16 @@ Download the jar file from the [release](https://github.com/yichen0831/OpenCC-Ja
 
 從[release](https://github.com/yichen0831/OpenCC-Java/releases)下載jar檔案, 加到project build path.
 
+Add the following requires to module-info.java.
+
+將下列requires加到module-info.java檔裡.
+
+    module yourmodulename {
+        requires OpenCC.Java;
+        requires java.sql;
+    }
+
+
 ## Usage 使用方式
 
     import opencc.OpenCC
