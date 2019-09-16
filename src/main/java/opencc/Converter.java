@@ -9,7 +9,7 @@ public class Converter {
 	public Converter(Iterable<String> mappingTables) {
 		for (String mappingTable : mappingTables) {
 			Dictionary dict = new Dictionary();
-			System.out.println("Loading... " + mappingTable);
+//			System.out.println("Loading... " + mappingTable);
 			dict.load(mappingTable);
 			dictList.add(dict);
 		}

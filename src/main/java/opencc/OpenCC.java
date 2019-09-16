@@ -19,9 +19,7 @@ public class OpenCC {
 	private void loadConfig(String conversion) {
 		ConfigLoader configLoader = new ConfigLoader();
 		Config config = configLoader.load(conversion);
-
-		System.out.println(config.getName());
-
+//		System.out.println(config.getName());
 		List<List<String>> conversionList = config.getConversionChain();
 		converterList.clear();
 		for (List<String> dictNameList : conversionList) {
